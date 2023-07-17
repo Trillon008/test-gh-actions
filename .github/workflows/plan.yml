@@ -8,6 +8,11 @@ on:
     branches:
     - main
   workflow_dispatch: 
+    inputs:
+      apply: 
+        description: 'TF apply'
+        required: true
+        default: 'apply'
 #Special permissions required for OIDC authentication
 # permissions:
 #   id-token: write
