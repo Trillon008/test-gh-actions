@@ -115,7 +115,6 @@ jobs:
     - name: echo
       run : echo ${{ github.events.input.apply }}
     
-    steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
