@@ -12,7 +12,7 @@ on:
       apply: 
         description: 'TF apply'
         required: true
-        default: 'apply'
+        default: 'plan'
 #Special permissions required for OIDC authentication
 # permissions:
 #   id-token: write
@@ -110,6 +110,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-plan]
+
+    steps:
+    - name: echo
+      run : echo ${{ github.events.input.apply }}
     
     steps:
     # Checkout the repository to the GitHub Actions runner
