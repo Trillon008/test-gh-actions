@@ -112,8 +112,8 @@ jobs:
     needs: [terraform-plan]
 
     steps:
-    - name: echo
-      run : echo ${{ github.event.inputs.tfapply }}
+    - name: Debug
+      run : echo "${{ github.event.inputs.tfapply }}"
     
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
