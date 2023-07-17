@@ -9,7 +9,7 @@ on:
     - main
   workflow_dispatch: 
     inputs:
-      apply: 
+      tfapply: 
         description: 'TF apply'
         required: true
         default: 'plan'
@@ -106,14 +106,14 @@ jobs:
                
   terraform-apply:
     name: 'Terraform Apply'
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2 && ${{ github.events.inputs.apply == 'apply'}}
+    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2 && ${{ github.event.inputs.tfapply }} == 'apply'
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-plan]
 
     steps:
     - name: echo
-      run : echo ${{ github.events.input.apply }}
+      run : echo ${{ github.event.inputs.tfapply }}
     
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
