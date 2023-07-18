@@ -8,11 +8,11 @@ on:
     branches:
     - workflow
   workflow_dispatch: 
-#     inputs:
-#       tfapply: 
-#         description: 'TF apply'
-#         required: true
-#         default: 'plan'
+    inputs:
+      tfapply: 
+        description: 'TF apply'
+        required: true
+        default: 'plan'
 # Special permissions required for OIDC authentication
 # permissions:
 #   id-token: write
@@ -28,7 +28,7 @@ on:
 jobs:
   terraform-apply:
     name: 'Terraform Apply'
-    if: needs.terraform-plan.outputs.tfplanExitCode == 2
+    if: ${{ github.event.inputs.tfapplly }} == 'apply'
     runs-on: ubuntu-latest
     # environment: production-manual
     # needs: [terraform-plan]
