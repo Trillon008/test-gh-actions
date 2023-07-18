@@ -1,12 +1,12 @@
 name: 'Terraform Apply'
 
 on:
-  push:
-    branches:
-    - workflow
-  pull_request:
-    branches:
-    - workflow
+  # push:
+  #   branches:
+  #   - workflow
+  # pull_request:
+  #   branches:
+  #   - workflow
   workflow_dispatch: 
     inputs:
       tfapply: 
