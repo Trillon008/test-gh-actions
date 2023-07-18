@@ -1,12 +1,6 @@
 name: 'Terraform Apply'
 
 on:
-  # push:
-  #   branches:
-  #   - workflow
-  # pull_request:
-  #   branches:
-  #   - workflow
   workflow_dispatch: 
     inputs:
       tfapply: 
@@ -25,12 +19,10 @@ jobs:
     name: 'Terraform Apply'
     if: ${{ github.event.inputs.tfapply == 'apply' }}
     runs-on: ubuntu-latest
-    # environment: production-manual
-    # needs: [terraform-plan]
 
     steps:
     - name: Debug step
-      if: ${{ github.event.inputs.tfapply == 'mario' }} 
+      if: ${{ github.event.inputs.tfapply == 'apply' }} 
       run:  echo "Value is  ${{ github.event.inputs.tfapply }}" 
     
     # Checkout the repository to the GitHub Actions runner
@@ -51,13 +43,6 @@ jobs:
       with:
         workflow: plan.yml
         name: tfplan
-        
-
-    # Download saved plan from artifacts  
-    # - name: Download Terraform Plan
-    #   uses: actions/download-artifact@v3
-    #   with:
-    #     name: tfplan
 
     # Terraform Apply
     - name: Terraform Apply
