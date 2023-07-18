@@ -29,6 +29,9 @@ jobs:
     # needs: [terraform-plan]
 
     steps:
+    - name: Debug step 
+      run:  echo "Value is  ${{ github.event.inputs.tfapply }}" 
+    
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
