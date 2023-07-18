@@ -12,12 +12,7 @@ on:
       tfapply: 
         description: 'TF apply'
         required: true
-        default: 'plan'
-# Special permissions required for OIDC authentication
-# permissions:
-#   id-token: write
-#   contents: read
-#   pull-requests: write
+        default: 'apply'
 
 # #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
 # env:
@@ -28,7 +23,7 @@ on:
 jobs:
   terraform-apply:
     name: 'Terraform Apply'
-    if: ${{ github.event.inputs.tfapplly }} == 'apply'
+    if: ${{ github.event.inputs.tfapply }} == 'apply'
     runs-on: ubuntu-latest
     # environment: production-manual
     # needs: [terraform-plan]
@@ -47,7 +42,7 @@ jobs:
       run: terraform init
 
     # Download saved plan from artifacts
-    - name: Download workflow artifact
+    - name: Download terraform plan artifact
       uses: dawidd6/action-download-artifact@v2.27.0
       with:
         workflow: plan.yml
