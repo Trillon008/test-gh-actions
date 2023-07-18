@@ -46,13 +46,21 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    # Download saved plan from artifacts  
-    - name: Download Terraform Plan
-      uses: actions/download-artifact@v3
+    # Download saved plan from artifacts
+    - name: Download workflow artifact
+      uses: dawidd6/action-download-artifact@v2.27.0
       with:
+        workflow: plan.yml
         name: tfplan
+        
+
+    # Download saved plan from artifacts  
+    # - name: Download Terraform Plan
+    #   uses: actions/download-artifact@v3
+    #   with:
+    #     name: tfplan
 
     # Terraform Apply
     - name: Terraform Apply
-      run: terraform apply -auto-approve env/tfplan
+      run: terraform apply -auto-approve tfplan
 
