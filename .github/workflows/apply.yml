@@ -23,13 +23,14 @@ on:
 jobs:
   terraform-apply:
     name: 'Terraform Apply'
-    if: ${{ github.event.inputs.tfapply }} == 'apply'
+    if: ${{ github.event.inputs.tfapply == 'apply' }}
     runs-on: ubuntu-latest
     # environment: production-manual
     # needs: [terraform-plan]
 
     steps:
-    - name: Debug step 
+    - name: Debug step
+      if: ${{ github.event.inputs.tfapply == 'mario' }} 
       run:  echo "Value is  ${{ github.event.inputs.tfapply }}" 
     
     # Checkout the repository to the GitHub Actions runner
