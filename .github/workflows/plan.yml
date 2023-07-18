@@ -3,10 +3,10 @@ name: 'Terraform Plan'
 on:
   push:
     branches:
-    - main
+    - workflow
   pull_request:
     branches:
-    - main
+    - workflow
 #   workflow_dispatch: 
 #     inputs:
 #       tfapply: 
@@ -103,35 +103,24 @@ jobs:
         SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
       run: |
         echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
-      
-               
-  terraform-apply:
-    name: 'Terraform Apply'
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    
+              
+    
+  manual-trigger-deploy:
     runs-on: ubuntu-latest
-    environment: production-manual
-    needs: [terraform-plan]
-
+    outputs:
+        CONTINUE_JOBS: ${{ steps.manual-trigger.outputs.CONTINUE_JOBS }}
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: terraform init
-
-    # Download saved plan from artifacts  
-    - name: Download Terraform Plan
-      uses: actions/download-artifact@v3
-      with:
-        name: tfplan
-
-    # Terraform Apply
-    - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
-
+      - name: manual-trigger
+        id: manual-trigger
+        uses: benhamiltonpro/manual-trigger@v1
+        with:
+        RUN_NAME: "deploy"
+  
+  deploy:
+    needs: manual-trigger-deploy
+    if: ${{ needs.manual-trigger-deploy.outputs.CONTINUE_JOBS == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runs deploy
+        run:  echo "Deploy is on baby"
