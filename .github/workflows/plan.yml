@@ -115,7 +115,7 @@ jobs:
         id: manual-trigger
         uses: benhamiltonpro/manual-trigger@v1
         with:
-        RUN_NAME: "deploy"
+        RUN_NAME: 'deploy'
   
   deploy:
     needs: manual-trigger-deploy
