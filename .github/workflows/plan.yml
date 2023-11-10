@@ -65,7 +65,7 @@ jobs:
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
-        name: "tfplan-${uuid}"
+        name: tfplan-$uuid
         path: env/tfplan
         
     # Create string output of Terraform Plan
@@ -76,7 +76,7 @@ jobs:
         
         delimiter="$(openssl rand -hex 8)"
         echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
-        echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+        echo "## Terraform Plan Output :world_map:" >> $GITHUB_OUTPUT
         echo "<details><summary>Expand</summary>" >> $GITHUB_OUTPUT
         echo "" >> $GITHUB_OUTPUT
         echo '```terraform' >> $GITHUB_OUTPUT
@@ -88,7 +88,7 @@ jobs:
     # Publish Terraform Plan as task summary
     - name: Publish Terraform Plan to Task Summary
       env:
-        SUMMARY: "${{ steps.tf-plan-string.outputs.summary }} :world_map:"
+        SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
       run: |
         echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
     
