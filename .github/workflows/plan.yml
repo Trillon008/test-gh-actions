@@ -64,8 +64,10 @@ jobs:
     # Save plan to artifacts  
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
+      env: 
+        UID: $uuid
       with:
-        name: tfplan-$uuid
+        name: tfplan-$UID
         path: env/tfplan
         
     # Create string output of Terraform Plan
