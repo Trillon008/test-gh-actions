@@ -39,6 +39,11 @@ jobs:
     - name: Terraform Format
       run: terraform fmt -check
 
+    - name: "Set an ID parameter"
+      id: set_uuid
+      run: |
+        echo "::set-output name=uuid::$(date +%S)"
+
     # Generates an execution plan for Terraform
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
@@ -60,7 +65,7 @@ jobs:
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
-        name: "tfplan-$(date +%s)"
+        name: "tfplan-${{steps.set_uuid.outputs.uuid}}"
         path: env/tfplan
         
     # Create string output of Terraform Plan
