@@ -60,7 +60,7 @@ jobs:
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
-        name: tfplan
+        name: tfplan-$(date +%s)
         path: env/tfplan
         
     # Create string output of Terraform Plan
