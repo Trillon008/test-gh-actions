@@ -33,7 +33,7 @@ jobs:
 
     # Download saved plan from artifacts
     - name: Download terraform plan artifact
-      uses: dawidd6/action-download-artifact@v3.0.2
+      uses: dawidd6/action-download-artifact@v2.28.0
       with:
         # workflow: plan.yml
         name: ${{ github.event.inputs.planid }}
