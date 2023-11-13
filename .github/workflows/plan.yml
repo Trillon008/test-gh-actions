@@ -44,11 +44,6 @@ jobs:
       run: |
         echo "uuid=$(date +%s)" >> "$GITHUB_ENV"
 
-    - name: "Debug stuff"
-      id: dbg
-      run: |
-        echo "$uuid : ${uuid}"
-
     # Generates an execution plan for Terraform
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
