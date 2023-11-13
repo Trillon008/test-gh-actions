@@ -65,7 +65,8 @@ jobs:
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
-        name: tfplan-${{ env.uuid }}
+        #name: tfplan-${{ env.uuid }}
+        name: tfplan-${{ github.event.workflow_run.id }}
         path: env/tfplan
         
     # Create string output of Terraform Plan
