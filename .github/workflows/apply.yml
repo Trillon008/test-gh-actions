@@ -40,5 +40,5 @@ jobs:
 
     # Terraform Apply
     - name: Terraform Apply
-      run: terraform apply -auto-approve ${{ github.event.inputs.planid }}
+      run: terraform apply -auto-approve tfplan
 
