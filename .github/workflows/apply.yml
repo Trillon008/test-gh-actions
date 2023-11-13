@@ -3,10 +3,9 @@ name: 'Terraform Apply'
 on:
   workflow_dispatch: 
     inputs:
-      tfapply: 
-        description: 'TF apply'
+      planid: 
+        description: 'Terrafom Plan ID'
         required: true
-        default: 'apply'
 
 # #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
 # env:
@@ -17,14 +16,9 @@ on:
 jobs:
   terraform-apply:
     name: 'Terraform Apply'
-    if: ${{ github.event.inputs.tfapply == 'apply' }}
     runs-on: ubuntu-latest
 
     steps:
-    - name: Debug step
-      if: ${{ github.event.inputs.tfapply == 'apply' }} 
-      run:  echo "Value is  ${{ github.event.inputs.tfapply }}" 
-    
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
@@ -42,7 +36,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.27.0
       with:
         workflow: plan.yml
-        name: tfplan
+        name: ${{ github.event.inputs.planid }}
 
     # Terraform Apply
     - name: Terraform Apply
