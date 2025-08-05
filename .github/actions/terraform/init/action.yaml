@@ -1,0 +1,34 @@
+---
+name: Setup Terraform
+description: "Setup terraform and performs fmt and validate"
+inputs:
+  terraform_version:
+    required: false
+    default: 1.10.5
+  stack:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+        terraform_wrapper: false
+
+    - name: Terraform Init
+      id: init
+      shell: bash
+      run: terraform -chdir=stacks/${{ inputs.stack }} init
+
+    - name: Terraform fmt
+      id: fmt
+      shell: bash
+      run: terraform -chdir=stacks/${{ inputs.stack }} fmt -check
+      continue-on-error: true
+
+    - name: Terraform Validate
+      id: validate
+      shell: bash
+      run: terraform -chdir=stacks/${{ inputs.stack }} validate
