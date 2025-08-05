@@ -1,0 +1,75 @@
+name: "Test Parall"
+
+on:
+  push:
+    branches:
+      - paral
+
+# jobs:
+#   klive:
+#     name: "Deploy ${{ matrix.environment }}"
+#     runs-on: ubuntu-latest
+#     strategy:
+#       max-parallel: 1
+#       fail-fast: true
+#       matrix:
+#         environment: ["development", "staging", "production"]
+#     steps:
+#       - name: "Deploy ${{ matrix.environment }} step"
+#         run: echo "deploying ${ENVIRONMENT}"
+#         env:
+#           ENVIRONMENT: ${{ matrix.environment }}
+#
+#   dms:
+#     name: "Deploy ${{ matrix.environment }}"
+#     runs-on: ubuntu-latest
+#     strategy:
+#       max-parallel: 1
+#       fail-fast: true
+#       matrix:
+#         environment: ["development", "staging", "production"]
+#     steps:
+#       - name: "Deploy ${{ matrix.environment }} step"
+#         run: echo "deploying ${ENVIRONMENT}"
+#         env:
+#           ENVIRONMENT: ${{ matrix.environment }}
+jobs:
+  core:
+    name: "Deploy Core"
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+    steps:
+      - name: "Deploy Core"
+        run: echo "deploying Core"
+
+  dev:
+    name: "Deploy ${{ matrix.environment }}"
+    needs: [core]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      fail-fast: true
+      matrix:
+        environment: ["kms, dlive", "tata"]
+    steps:
+      - name: "Deploy ${{ matrix.environment }} step"
+        run: echo "deploying ${ENVIRONMENT}"
+        env:
+          ENVIRONMENT: ${{ matrix.environment }}
+
+  staging:
+    name: "Deploy ${{ matrix.environment }}"
+    needs: [dev]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      fail-fast: true
+      matrix:
+        environment: ["kms, dlive", "tata"]
+    steps:
+      - name: "Deploy ${{ matrix.environment }} step"
+        run: echo "deploying ${ENVIRONMENT}"
+        env:
+          ENVIRONMENT: ${{ matrix.environment }}
