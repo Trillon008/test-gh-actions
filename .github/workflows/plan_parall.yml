@@ -7,23 +7,21 @@ on:
 env:
     TERM: xterm-256color
 
-strategy:
-  matrix:
-    projects: ["hayley", "jenna", "victoria"]
-
 jobs:
-  # configure:
-  #   runs-ons: ubuntu-latest
-  #   outputs:
-  #     matrix: ${{ steps.set-matrix.outputs.matrix }}
-  #   steps:
-  #   - name: Checkout to repository
-  #      uses: actions/checkout@v4
-  #    - name: Set matrix data
-  #      id: set-matrix
-  #      run: echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - name: Checkout to repository
+      uses: actions/checkout@v4
+    - name: Set matrix data
+      id: set-matrix
+      run: echo "matrix=['hayley','jenna', 'victoria' ]" >> $GITHUB_OUTPUT
+
   core:
     name: "Deploy Core"
+    needs: [configure]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -33,30 +31,48 @@ jobs:
         run: echo "deploying Core"
 
   dev:
-    name: "Deploy ${{ matrix.projects }}"
-    needs: [core]
+    name: "Deploy ${{ matrix.projects }} development"
+    needs: [core, configure]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
-      fail-fast: true
+      fail-fast: false
+      matrix:
+        projects: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v4
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
         with:
           terraform_version: 1.10.5
           stack: ${{ matrix.projects }}/development
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=stacks/${{ matrix.projects }}/development plan
+        continue-on-error: true
 
   staging:
-    name: "Deploy ${{ matrix.projects }}"
-    if: alwaus()
-    needs: [core, dev]
+    name: "Deploy ${{ matrix.projects }} staging"
+    #if: always()
+    needs: [configure, core, dev]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
-      fail-fast: true
+      fail-fast: false
+      matrix:
+        projects: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v4
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
         with:
           terraform_version: 1.10.5
           stack: ${{ matrix.projects }}/staging
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=stacks/${{ matrix.projects }}/staging plan
+        continue-on-error: true
