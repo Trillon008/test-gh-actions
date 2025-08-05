@@ -8,37 +8,43 @@ env:
     TERM: xterm-256color
 
 jobs:
-  configure:
+  # configure:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     matrix: ${{ steps.set-matrix.outputs.matrix }}
+  #   steps:
+  #   - name: Checkout to repository
+  #     uses: actions/checkout@v4
+  #   - name: Set matrix data
+  #     id: set-matrix
+  #     run: echo "matrix=['hayley','jenna', 'victoria' ]" >> $GITHUB_OUTPUT
+
+  core:
+    name: "Configure and Deploy Core"
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    strategy:
+      max-parallel: 1
+      fail-fast: true
     steps:
     - name: Checkout to repository
       uses: actions/checkout@v4
     - name: Set matrix data
       id: set-matrix
-      run: echo "matrix=['hayley','jenna', 'victoria' ]" >> $GITHUB_OUTPUT
-
-  core:
-    name: "Deploy Core"
-    needs: [configure]
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      fail-fast: true
-    steps:
-      - name: "Deploy Core"
-        run: echo "deploying Core"
+      run: echo "matrix=['hayley', 'jenna', 'victoria' ]" >> $GITHUB_OUTPUT
+    - name: "Deploy Core"
+      run: echo "deploying Core"
 
   dev:
     name: "Deploy ${{ matrix.projects }} development"
-    needs: [core, configure]
+    needs: core
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.configure.outputs.matrix) }}
+        projects: ${{ fromJson(needs.core.outputs.matrix) }}
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
@@ -55,14 +61,14 @@ jobs:
 
   staging:
     name: "Deploy ${{ matrix.projects }} staging"
-    #if: always()
-    needs: [configure, core, dev]
+    if: always()
+    needs: [core, dev]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.configure.outputs.matrix) }}
+        projects: ${{ fromJson(needs.core.outputs.matrix) }}
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
