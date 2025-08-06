@@ -22,11 +22,32 @@ jobs:
       id: set-matrix
       run: echo "matrix=['hayley', 'jenna', 'victoria' ]" >> $GITHUB_OUTPUT
 
-  plan:
+  dev:
     runs-on: ubuntu-latest
     needs: core
-    name: Create a plan for an example terraform configuration
+    name: "Plan ${{ matrix.projects }} development"
     strategy:
+      fail-fast: false
+      matrix:
+        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v2
+        with:
+          path: stacks/${{ matrix.projects }}/development
+        continue-on-error: true
+
+  staging:
+    runs-on: ubuntu-latest
+    needs: [core, dev]
+    name: "Plan ${{ matrix.projects }} staging"
+    strategy:
+      fail-fast: false
       matrix:
         projects: ${{ fromJson(needs.core.outputs.matrix) }}
     env:
@@ -39,3 +60,4 @@ jobs:
         uses: dflook/terraform-plan@v2
         with:
           path: stacks/${{ matrix.projects }}/staging
+        continue-on-error: true

@@ -6,7 +6,7 @@ locals {
       key        = ["maclef"]
     }
     #mre_sry_data
-    mry_data_priv = {
+    achille-talon = {
       certificat = ["List", "delete"]
       key        = ["maclef"]
     }
