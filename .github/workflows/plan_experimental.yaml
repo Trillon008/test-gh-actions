@@ -11,16 +11,17 @@ jobs:
     name: "Configure and Deploy Core"
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
     strategy:
       max-parallel: 1
       fail-fast: true
     steps:
     - name: Checkout to repository
       uses: actions/checkout@v4
-    - name: Set matrix data
-      id: set-matrix
-      run: echo "matrix=['hayley', 'jenna', 'victoria' ]" >> $GITHUB_OUTPUT
+    - name: Generate Matrix
+      id: generate-matrix
+      run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+      #       echo "matrix=['hayley', 'jenna', 'victoria' ]" >> $GITHUB_OUTPUT
 
   dev:
     runs-on: ubuntu-latest
