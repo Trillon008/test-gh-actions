@@ -4,7 +4,7 @@ description: "Setup terraform and performs fmt and validate"
 inputs:
   terraform_version:
     required: false
-    default: 1.10.5
+    default: 1.12.2
   stack:
     required: true
 

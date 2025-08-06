@@ -1,4 +1,4 @@
-name: Create terraform plan
+name: TF Plan
 
 on: [pull_request]
 
@@ -21,7 +21,6 @@ jobs:
     - name: Generate Matrix
       id: generate-matrix
       run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
-      #       echo "matrix=['hayley', 'jenna', 'victoria' ]" >> $GITHUB_OUTPUT
 
   dev:
     runs-on: ubuntu-latest
