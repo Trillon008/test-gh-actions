@@ -8,17 +8,6 @@ env:
     TERM: xterm-256color
 
 jobs:
-  # configure:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     matrix: ${{ steps.set-matrix.outputs.matrix }}
-  #   steps:
-  #   - name: Checkout to repository
-  #     uses: actions/checkout@v4
-  #   - name: Set matrix data
-  #     id: set-matrix
-  #     run: echo "matrix=['hayley','jenna', 'victoria' ]" >> $GITHUB_OUTPUT
-
   core:
     name: "Configure and Deploy Core"
     runs-on: ubuntu-latest
