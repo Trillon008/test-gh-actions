@@ -44,7 +44,13 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform -chdir=stacks/${{ matrix.projects }}/development plan
+          terraform -chdir=stacks/${{ matrix.projects }}/development plan -out=tfplan
+        continue-on-error: true
+      - name: Terraform Show
+        id: show
+        run: |
+          terraform -chdir=stacks/${{ matrix.projects }}/development show tfplan
+          rm -f stacks/${{ matrix.projects }}/development/tfplan
         continue-on-error: true
 
   staging:
