@@ -1,3 +1,6 @@
+## This plan uses: https://github.com/dflook/terraform-plan pre made github action for terraform
+# While this works great,adn has great implementation ideas it also shows plan as ok when whey are not. 
+#
 name: TF Plan
 
 on: [pull_request]
