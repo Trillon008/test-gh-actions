@@ -12,6 +12,8 @@ jobs:
     name: configuration
     runs-on: ubuntu-latest
     outputs:
+      prod: ${{ steps.generate-matrix.outputs.prod }}
+      stag: ${{ steps.generate-matrix.outputs.stag }}
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
     - name: Checkout to repository
@@ -19,18 +21,39 @@ jobs:
 
     - name: Generate Matrix
       id: generate-matrix
-      run: echo "matrix=$(cat matrix.stacks.json | yq  -I0 -o json)" >> $GITHUB_OUTPUT
+      run: |
+        echo "prod=$(cat matrix.stacks.json | yq '.production' -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "stag=$(cat matrix.stacks.json | yq '.staging' -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "matrix=$(cat matrix.stacks.json | yq  -I0 -o json)" >> $GITHUB_OUTPUT
 
-  dev:
-    name: TF
-    needs: conf
-    if: ${{ matrix.stacks.env == 'development' }}
+  stag:
+    name: staging
+    needs: [conf]
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
-        stacks: ${{ fromJson(needs.conf.outputs.matrix) }}
+        stacks: ${{ fromJson(needs.conf.outputs.stag) }}
+    uses: ./.github/workflows/reusable_plan.yaml
+    env:
+      toto: tata
+    with:
+      stack: ${{ matrix.stacks.name }}
+      env: ${{ matrix.stacks.env }}
+    secrets:
+      anime: ${{ secrets.ANIME }}
+  
+  prod:
+    name: production
+    needs: [conf, stag]
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        stacks: ${{ fromJson(needs.conf.outputs.prod) }}
     uses: ./.github/workflows/reusable_plan.yaml
     with:
       stack: ${{ matrix.stacks.name }}
       env: ${{ matrix.stacks.env }}
+    secrets:
+      anime: ${{ secrets.ANIME }}

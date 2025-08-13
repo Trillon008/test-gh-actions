@@ -8,6 +8,13 @@ on:
       env:
         required: true
         type: string
+    secrets:
+      anime:
+        required: true
+env:
+  HARDWARE: mouse
+  ANIME: ${{ secrets.anime }}
+
 jobs:
   plan:
     name: Terraform Plan
@@ -16,6 +23,9 @@ jobs:
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
+      
+      - name: Echo env
+        run: echo ${{ env.toto }}
 
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
