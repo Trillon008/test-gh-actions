@@ -1,0 +1,30 @@
+[
+    {
+        "name": "hayley",
+        "env": "development"
+    },
+    {
+        "name": "hayley",
+        "env": "staging"
+    },
+    {
+        "name": "jenna",
+        "env": "development"
+    },
+    {
+        "name": "jenna",
+        "env": "production"
+    },
+    {
+        "name": "jenna",
+        "env": "staging"
+    },
+    {
+        "name": "victoria",
+        "env": "development"
+    },
+    {
+        "name": "victoria",
+        "env": "staging"
+    }
+]

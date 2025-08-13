@@ -22,7 +22,8 @@ jobs:
 
     - name: Generate Matrix
       id: generate-matrix
-      run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+      #run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+      run: echo "matrix=$(cat matrix.stacks.json | yq  -I0 -o json)" >> $GITHUB_OUTPUT
 
   plan:
     name: plan
