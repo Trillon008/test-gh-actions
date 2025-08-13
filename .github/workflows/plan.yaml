@@ -9,33 +9,28 @@ env:
 
 jobs:
   conf:
-    name: debug
+    name: configuration
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
-    strategy:
-      max-parallel: 1
-      fail-fast: true
     steps:
     - name: Checkout to repository
       uses: actions/checkout@v4
 
     - name: Generate Matrix
       id: generate-matrix
-      #run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
       run: echo "matrix=$(cat matrix.stacks.json | yq  -I0 -o json)" >> $GITHUB_OUTPUT
 
-  plan:
-    name: plan
-    runs-on: ubuntu-latest
-    environment: ${{ matrix.projects.env }}
+  dev:
+    name: TF
     needs: conf
+    if: ${{ matrix.stacks.env == 'development' }}
     strategy:
+      max-parallel: 3
+      fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.conf.outputs.matrix) }}
-    steps:
-      - name: debug
-        run: |
-          echo ${{ matrix.projects.name }}/${{ matrix.projects.env }}
-
-
+        stacks: ${{ fromJson(needs.conf.outputs.matrix) }}
+    uses: ./.github/workflows/reusable_plan.yaml
+    with:
+      stack: ${{ matrix.stacks.name }}
+      env: ${{ matrix.stacks.env }}

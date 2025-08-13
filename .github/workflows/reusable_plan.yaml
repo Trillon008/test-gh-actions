@@ -1,0 +1,37 @@
+---
+on:
+  workflow_call:
+    inputs:
+      stack:
+        required: true
+        type: string
+      env:
+        required: true
+        type: string
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
+    steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: ./.github/actions/terraform/init
+        with:
+          terraform_version: 1.12.2
+          stack: ${{ inputs.stack }}/${{ inputs.env }}
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=stacks/${{ inputs.stack }}/${{ inputs.env }} plan -out=tfplan
+        continue-on-error: true
+
+      - name: Terraform Plan Human Readable
+        id: show
+        run: |
+          terraform -chdir=stacks/${{ inputs.stack }}/${{ inputs.env }} show tfplan
+          rm -f stacks/${{ inputs.stack }}/${{ inputs.env }}/tfplan
+        continue-on-error: true
