@@ -27,6 +27,7 @@ jobs:
   plan:
     name: plan
     runs-on: ubuntu-latest
+    environment: ${{ matrix.projects.env }}
     needs: conf
     strategy:
       matrix:
@@ -34,6 +35,6 @@ jobs:
     steps:
       - name: debug
         run: |
-          echo ${{ matrix.projects.name }}/${{ matrix.projects.location }}
+          echo ${{ matrix.projects.name }}/${{ matrix.projects.env }}
 
 

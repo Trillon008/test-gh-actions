@@ -1,8 +1,14 @@
 ---
 projects:
   - name: hayley
+    env: staging
     location: we
   - name: jenna
+    env: production
     location: we
   - name: victoria
+    env: staging
     location: uae
+  - name: jenna
+    env: staging
+    location: we
