@@ -1,0 +1,78 @@
+name: "Test Parall"
+
+on:
+  push:
+    branches:
+      - paral
+env:
+    TERM: xterm-256color
+
+jobs:
+  core:
+    name: "Configure and Deploy Core"
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+    steps:
+    - name: Checkout to repository
+      uses: actions/checkout@v4
+    - name: Generate Matrix
+      id: generate-matrix
+      run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+
+
+  dev:
+    name: "Deploy ${{ matrix.projects }} development"
+    needs: core
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+    steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: ./.github/actions/terraform/init
+        with:
+          terraform_version: 1.12.2
+          stack: ${{ matrix.projects }}/development
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=stacks/${{ matrix.projects }}/development plan -out=tfplan
+        continue-on-error: true
+      - name: Terraform Show
+        id: show
+        run: |
+          terraform -chdir=stacks/${{ matrix.projects }}/development show tfplan
+          rm -f stacks/${{ matrix.projects }}/development/tfplan
+        continue-on-error: true
+
+  staging:
+    name: "Deploy ${{ matrix.projects }} staging"
+    if: always()
+    needs: [core, dev]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+    steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: ./.github/actions/terraform/init
+        with:
+          terraform_version: 1.12.2
+          stack: ${{ matrix.projects }}/staging
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=stacks/${{ matrix.projects }}/staging plan
+        continue-on-error: true
