@@ -1,0 +1,35 @@
+name: "Test Plan"
+
+on:
+  push:
+    branches:
+      - better_matrix
+env:
+    TERM: xterm-256color
+
+jobs:
+  conf:
+    name: debug
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+    steps:
+    - name: Checkout to repository
+      uses: actions/checkout@v4
+
+    - name: Generate Matrix
+      id: generate-matrix
+      run: echo "matrix=$(cat matrix.stacks.yaml.bkp | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+
+  plan:
+    name: plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug
+        run: |
+          echo ${{ matrix.projects }}
+
+
