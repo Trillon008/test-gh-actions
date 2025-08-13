@@ -22,14 +22,18 @@ jobs:
 
     - name: Generate Matrix
       id: generate-matrix
-      run: echo "matrix=$(cat matrix.stacks.yaml.bkp | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+      run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
 
   plan:
     name: plan
     runs-on: ubuntu-latest
+    needs: conf
+    strategy:
+      matrix:
+        projects: ${{ fromJson(needs.conf.outputs.matrix) }}
     steps:
       - name: debug
         run: |
-          echo ${{ matrix.projects }}
+          echo ${{ matrix.projects.name }}/${{ matrix.projects.location }}
 
 
