@@ -46,8 +46,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Debug
         run: |
-          #echo ${{ needs.core.outputs.dev.name }}
-          echo ${{ fromJSON(needs.core.outputs.dev) }}
+          echo ${{ fromJSON(needs.core.outputs.dev.name) }}
 
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
