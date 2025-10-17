@@ -34,7 +34,7 @@ jobs:
   dev:
     name: "Deploy ${{ matrix.projects.name }} development"
     needs: core
-    if: ${{ fromJson(needs.core.outputs.dev.name) != 'dummy' }}
+    #if: ${{ fromJson(needs.core.outputs.dev.name) != 'dummy' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
@@ -45,7 +45,10 @@ jobs:
       - name: Checkout to repository
         uses: actions/checkout@v4
       - name: Debug
-        run: echo ${{ needs.core.outputs.dev.name }}
+        run: |
+          echo ${{ needs.core.outputs.dev.name }}
+          echo ${{ fromJson(needs.core.outputs.dev) }}
+          echo ${{ fromJson(needs.core.outputs.dev.name) }}
 
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
