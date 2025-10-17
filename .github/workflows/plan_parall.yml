@@ -34,6 +34,7 @@ jobs:
   dev:
     name: "Deploy ${{ matrix.projects.name }} development"
     needs: core
+    if: ${{ matrix.projects.name != 'dummy' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
