@@ -29,7 +29,7 @@ jobs:
       run: |
         echo "core=$(cat matrix.stacks.dum.json | yq '.core-services'  -I0 -o json)" >> $GITHUB_OUTPUT
         echo "stag=$(cat matrix.stacks.dum.json | yq '.staging'  -I0 -o json)" >> $GITHUB_OUTPUT
-        echo "dev=$(cat matrix.stacks.dum.json | yq '.development'  -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "dev=$(cat matrix.stacks.dum.json | yq '.development[]'  -I0 -o json)" >> $GITHUB_OUTPUT
 
   dev:
     name: "Deploy ${{ matrix.projects.name }} development"
