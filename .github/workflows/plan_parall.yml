@@ -51,7 +51,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform -chdir=stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }}
+          terraform -chdir=stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }} plan
         continue-on-error: true
       - name: Terraform Show
         id: show

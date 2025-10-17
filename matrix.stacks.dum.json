@@ -15,9 +15,6 @@
         }
     ],
     "development": [
-        {
-            "name": "dummy",
-            "env": "dummy"
-        }
+
     ]
 }
