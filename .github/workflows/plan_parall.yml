@@ -32,7 +32,7 @@ jobs:
         echo "dev=$(cat matrix.stacks.dum.json | yq '.development'  -I0 -o json)" >> $GITHUB_OUTPUT
 
   dev:
-    name: "Deploy ${{ matrix.projects }} development"
+    name: "Deploy ${{ matrix.projects.name }} development"
     needs: core
     runs-on: ubuntu-latest
     strategy:
@@ -51,7 +51,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform -chdir=stacks/${{ matrix.projects }}/development plan -out=tfplan
+          terraform -chdir=stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }}
         continue-on-error: true
       - name: Terraform Show
         id: show
@@ -61,7 +61,7 @@ jobs:
         continue-on-error: true
 
   staging:
-    name: "Deploy ${{ matrix.projects }} staging"
+    name: "Deploy ${{ matrix.projects.name }} staging"
     #if: always()
     needs: [core, dev]
     runs-on: ubuntu-latest
