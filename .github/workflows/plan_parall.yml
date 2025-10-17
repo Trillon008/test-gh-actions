@@ -48,7 +48,7 @@ jobs:
         run: |
           echo ${{ needs.core.outputs.dev.name }}
           echo ${{ fromJson(needs.core.outputs.dev) }}
-          echo ${{ fromJson(needs.core.outputs.dev.name) }}
+          #echo ${{ fromJson(needs.core.outputs.dev.name) }}
 
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
