@@ -1,23 +1,9 @@
 {
     "core-services": [],
-    "production": [
-        {
-            "name": "jenna",
-            "env": "production"
-        }
-    ],
     "staging": [
         {
-            "name": "hayley",
-            "env": "staging"
-        },
-        {
-            "name": "jenna",
-            "env": "staging"
-        },
-        {
-            "name": "victoria",
-            "env": "staging"
+            "name": "dummy",
+            "env": "dummy"
         }
     ],
     "development": [
@@ -34,5 +20,4 @@
             "env": "development"
         }
     ],
-    "memory": []
 }
