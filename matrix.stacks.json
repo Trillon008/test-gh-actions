@@ -1,0 +1,38 @@
+{
+    "core-services": [],
+    "production": [
+        {
+            "name": "jenna",
+            "env": "production"
+        }
+    ],
+    "staging": [
+        {
+            "name": "hayley",
+            "env": "staging"
+        },
+        {
+            "name": "jenna",
+            "env": "staging"
+        },
+        {
+            "name": "victoria",
+            "env": "staging"
+        }
+    ],
+    "development": [
+        {
+            "name": "hayley",
+            "env": "development"
+        },
+        {
+            "name": "jenna",
+            "env": "development"
+        },
+        {
+            "name": "victoria",
+            "env": "development"
+        }
+    ],
+    "memory": []
+}

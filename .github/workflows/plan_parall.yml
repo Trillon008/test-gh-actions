@@ -12,7 +12,10 @@ jobs:
     name: "Configure and Deploy Core"
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+      #matrix: ${{ steps.generate-matrix.outpu      
+      core: ${{ steps.generate-matrix.outputs.core }}
+      stag: ${{ steps.generate-matrix.outputs.stag }}
+      dev: ${{ steps.generate-matrix.outputs.dev }}
     strategy:
       max-parallel: 1
       fail-fast: true
@@ -21,8 +24,11 @@ jobs:
       uses: actions/checkout@v4
     - name: Generate Matrix
       id: generate-matrix
-      run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
-
+      #run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+      run: |
+        echo "core=$(cat matrix.stacks.json | yq '.core-services'  -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "stag=$(cat matrix.stacks.json | yq '.staging'  -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "dev=$(cat matrix.stacks.json | yq '.dev'  -I0 -o json)" >> $GITHUB_OUTPUT
 
   dev:
     name: "Deploy ${{ matrix.projects }} development"
