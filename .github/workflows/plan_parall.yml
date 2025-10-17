@@ -45,11 +45,11 @@ jobs:
       - name: Checkout to repository
         uses: actions/checkout@v4
       - name: Debug
-        run: echo
+        run: echo ${{ needs.core.outputs.dev.name }}
+
       - name: Setup Terraform
         uses: ./.github/actions/terraform/init
-        with: ${{ needs.core.outputs.dev.name }}
-
+        with:
           terraform_version: 1.12.2
           stack: ${{ matrix.projects.name }}/${{ matrix.projects.env }}
       - name: Terraform Plan
