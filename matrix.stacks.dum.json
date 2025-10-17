@@ -1,0 +1,23 @@
+{
+    "core-services": [],
+    "staging": [
+        {
+            "name": "hayley",
+            "env": "staging"
+        },
+        {
+            "name": "jenna",
+            "env": "staging"
+        },
+        {
+            "name": "victoria",
+            "env": "staging"
+        }
+    ],
+    "development": [
+        {
+            "name": "dummy",
+            "env": "dummy"
+        }
+    ]
+}

@@ -3,10 +3,9 @@ locals {
     "dummy-key" = {
       certificat = ["List", "Get"],
       secret     = "machin"
-      key        = ["maclef2"]
+      key        = ["maclef"]
     }
-    #mre_sry_data
-    mry_data_priv =
+    mry_data_priv = {
       certificat = ["List", "delete"]
       key        = ["maclef"]
     }

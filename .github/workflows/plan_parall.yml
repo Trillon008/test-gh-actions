@@ -3,7 +3,7 @@ name: "Test Parall"
 on:
   push:
     branches:
-      - paral
+      - stupid_idea
 env:
     TERM: xterm-256color
 
@@ -12,27 +12,34 @@ jobs:
     name: "Configure and Deploy Core"
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+      #matrix: ${{ steps.generate-matrix.outpu      
+      core: ${{ steps.generate-matrix.outputs.core }}
+      stag: ${{ steps.generate-matrix.outputs.stag }}
+      dev: ${{ steps.generate-matrix.outputs.dev }}
     strategy:
       max-parallel: 1
       fail-fast: true
     steps:
     - name: Checkout to repository
       uses: actions/checkout@v4
+
     - name: Generate Matrix
       id: generate-matrix
-      run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
-
+      #run: echo "matrix=$(cat matrix.stacks.yaml | yq '.projects' -I0 -o json)" >> $GITHUB_OUTPUT
+      run: |
+        echo "core=$(cat matrix.stacks.json | yq '.core-services'  -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "stag=$(cat matrix.stacks.json | yq '.staging'  -I0 -o json)" >> $GITHUB_OUTPUT
+        echo "dev=$(cat matrix.stacks.json | yq '.development'  -I0 -o json)" >> $GITHUB_OUTPUT
 
   dev:
-    name: "Deploy ${{ matrix.projects }} development"
+    name: "Deploy ${{ matrix.projects.name }} development"
     needs: core
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+        projects: ${{ fromJson(needs.core.outputs.dev) }}
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
@@ -40,29 +47,29 @@ jobs:
         uses: ./.github/actions/terraform/init
         with:
           terraform_version: 1.12.2
-          stack: ${{ matrix.projects }}/development
+          stack: ${{ matrix.projects.name }}/${{ matrix.projects.env }}
       - name: Terraform Plan
         id: plan
         run: |
-          terraform -chdir=stacks/${{ matrix.projects }}/development plan -out=tfplan
+          terraform -chdir=stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }} plan
         continue-on-error: true
       - name: Terraform Show
         id: show
         run: |
-          terraform -chdir=stacks/${{ matrix.projects }}/development show tfplan
-          rm -f stacks/${{ matrix.projects }}/development/tfplan
+          terraform -chdir=stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }} show tfplan
+          rm -f stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }}/tfplan
         continue-on-error: true
 
   staging:
-    name: "Deploy ${{ matrix.projects }} staging"
-    if: always()
+    name: "Deploy ${{ matrix.projects.name }} staging"
+    #if: always()
     needs: [core, dev]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+        projects: ${{ fromJson(needs.core.outputs.stag) }}
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
@@ -70,9 +77,9 @@ jobs:
         uses: ./.github/actions/terraform/init
         with:
           terraform_version: 1.12.2
-          stack: ${{ matrix.projects }}/staging
+          stack: ${{ matrix.projects.name }}/${{ matrix.projects.env }}
       - name: Terraform Plan
         id: plan
         run: |
-          terraform -chdir=stacks/${{ matrix.projects }}/staging plan
+          terraform -chdir=stacks/${{ matrix.projects.name }}/${{ matrix.projects.env }} plan
         continue-on-error: true
