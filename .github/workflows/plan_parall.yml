@@ -39,7 +39,7 @@ jobs:
       max-parallel: 3
       fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+        projects: ${{ fromJson(needs.core.outputs.dev) }}
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
@@ -69,7 +69,7 @@ jobs:
       max-parallel: 3
       fail-fast: false
       matrix:
-        projects: ${{ fromJson(needs.core.outputs.matrix) }}
+        projects: ${{ fromJson(needs.core.outputs.stag) }}
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v4
