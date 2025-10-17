@@ -3,7 +3,7 @@ name: "Test Parall"
 on:
   push:
     branches:
-      - paral
+      - stupid_idea
 env:
     TERM: xterm-256color
 
